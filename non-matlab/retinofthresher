@@ -1,0 +1,84 @@
+#!/bin/sh
+## automatic retinotopy processing tool
+## Daniel Drucker, <ddrucker@psych.upenn.edu>
+## June 2007
+##
+## be aware that you must put the arguments in the right order
+## (RING then WEDGE) or the phasefix values will be applied incorrectly
+
+test $# -ne 2 && test $# -ne 4 && echo "Usage: `basename $0` RING_GLM_DIR WEDGE_GLM_DIR [ringphasefix] [wedgephasefix]" && exit 65
+
+MAP=vbstatmap
+SHIFT=~/bin/phaseshift
+THRESH=2
+
+if test $# -ne 4; then
+    RINGPHASEFIX=0
+    WEDGEPHASEFIX=22.5
+    echo "defaulting to RINGPHASEFIX=0, WEDGEPHASEFIX=22.5"
+else
+    RINGPHASEFIX=$3
+    WEDGEPHASEFIX=$4
+fi
+
+
+## ensure that the two GLMs have the necessary contrast
+grep -q phase $1/contrasts.txt || echo -e "phase phase vec 1 -1 0 0\nhyp hyp vec 1 1 0 0" >> $1/contrasts.txt
+grep -q phase $2/contrasts.txt || echo -e "phase phase vec 1 -1 0 0\nhyp hyp vec 1 1 0 0" >> $2/contrasts.txt
+
+RING=`basename $1`
+WEDGE=`basename $2`
+
+## create phase and hyp maps for ring and wedge to operate on later
+$MAP $1 -o $RING-phase_uncorr.cub -c phase
+$MAP $1 -o $RING-hyp.cub   -c hyp
+$MAP $2 -o $WEDGE-phase_uncorr.cub -c phase
+$MAP $2 -o $WEDGE-hyp.cub   -c hyp
+
+## fix phase shifts
+$SHIFT $RING-phase_uncorr.cub  $RING-phase.cub  $RINGPHASEFIX
+$SHIFT $WEDGE-phase_uncorr.cub $WEDGE-phase.cub $WEDGEPHASEFIX
+
+## create f maps for ring and wedge
+$MAP $1 -c "1 1 0 0" -s f -o $RING-f.cub
+$MAP $2 -c "1 1 0 0" -s f -o $WEDGE-f.cub
+
+## create masked cubs with the f maps
+# ring
+vbmaskmunge $RING-f.cub $WEDGE-f.cub -t $THRESH -i -p Masked_ -a $RING-phase.cub
+vbmaskmunge $RING-f.cub $WEDGE-f.cub -t $THRESH -i -p Masked_ -a $RING-hyp.cub
+# wedge
+vbmaskmunge $RING-f.cub $WEDGE-f.cub -t $THRESH -i -p Masked_ -a $WEDGE-phase.cub
+vbmaskmunge $RING-f.cub $WEDGE-f.cub -t $THRESH -i -p Masked_ -a $WEDGE-hyp.cub
+
+mv $RING-phase.cub  EntireBrain_$RING-phase.cub
+mv $WEDGE-phase.cub EntireBrain_$WEDGE-phase.cub
+mv $RING-hyp.cub    EntireBrain_$RING-hyp.cub
+mv $WEDGE-hyp.cub   EntireBrain_$WEDGE-hyp.cub
+
+## clean up
+rm $RING-phase_uncorr.cub $WEDGE-phase_uncorr.cub 
+
+for ph in phase hyp; do
+  for rw in $RING $WEDGE; do
+    for me in Masked EntireBrain; do
+      FILE=${me}_$rw-$ph
+      resample $FILE.cub ${FILE}_BV.cub -nn -xx 0 0.33 159 -yy 0 0.33 189 -zz 0 0.333 138
+      resample ${FILE}_BV.cub ${FILE}_BV.cub -nn -xx -49 1 256 -yy -16 1 256 -zz -77 1 256
+      vborient ${FILE}_BV.cub ${FILE}_BV.cub ASR -from RPI
+      vb2img -f ${FILE}_BV.cub ${FILE}_BV.img[small]
+      vb2vmp ${FILE}_BV.img ${FILE}_BV.vmp
+      rm ${FILE}_BV.cub ${FILE}_BV.img ${FILE}_BV.hdr
+    done
+  done
+done
+
+for FILE in $RING-f $WEDGE-f; do
+  resample $FILE.cub ${FILE}_BV.cub -nn -xx 0 0.33 159 -yy 0 0.33 189 -zz 0 0.333 138
+  resample ${FILE}_BV.cub ${FILE}_BV.cub -nn -xx -49 1 256 -yy -16 1 256 -zz -77 1 256
+  vborient ${FILE}_BV.cub ${FILE}_BV.cub ASR -from RPI
+  vb2img -f ${FILE}_BV.cub ${FILE}_BV.img[small]
+  vb2vmp ${FILE}_BV.img ${FILE}_BV.vmp
+  rm ${FILE}_BV.cub ${FILE}_BV.img ${FILE}_BV.hdr
+done
+

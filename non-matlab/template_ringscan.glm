@@ -1,0 +1,23 @@
+pri 2
+audit yes
+meannorm yes
+driftcorrect yes
+kernel /usr/local/VoxBo/elements/filters/Eigen1.ref
+
+lows 19
+highs 1
+orderg 320
+
+noisemodel /path/to/your/Models/OneOverF.ref
+
+## where did your G and preG get written? put that here...
+gmatrix /path/to/your/Models/RVF_Ring_2scans/RVF_Ring_2scans.G
+
+refname /jet/aguirre/PatientStudies/MC/Controls_retinotopy_insert/J102806L/Models/Retinotopy_CondFunc_x2.ref
+
+glm YOUR_GLM_NAME
+dirname /path/to/your/Models/RVF_Ring_2scans
+scan /jet/aguirre/PatientStudies/MC/Controls_retinotopy_insert/J102806L/J102806L_01/J102806L_01.tes
+scan /jet/aguirre/PatientStudies/MC/Controls_retinotopy_insert/J102806L/J102806L_02/J102806L_02.tes
+scan /jet/aguirre/PatientStudies/MC/Controls_retinotopy_insert/J102806L/J102806L_03/J102806L_03.tes
+end

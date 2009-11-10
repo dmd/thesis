@@ -1,0 +1,45 @@
+#!/usr/bin/perl
+
+$SUBJECTDIR = "/ajet/ddrucker/blob1_data/subjects";
+$MASKDIR = "/ajet/ddrucker/blob1_data/ROIs";
+
+@subjects = qw (A121506I J120406L  M121306F R121506A  Y120906C);
+@masks = qw (V1 V2V3d V2V3v V4 Adapt_RpFS_forDMD wMap_LOC_forDMD wMap_V3A_forDMD );
+@degs = qw(0 7.5 15 22.5 30 37.5 45);
+
+%contrasts = (
+"pha" => "pha beta vec 0 0 0 1 0 0",
+"amp" => "amp beta vec 0 0 0 0 1 0",
+"euc" => "euc beta vec 0 0 0 0 0 1"
+            );
+
+$counter = 0;
+
+foreach $s (@subjects) {
+	 foreach $m (@masks) {
+		  if ($m =~ /^V/) {
+				$mm = 'VIS/' . substr($s,0,1) . substr($s,7,1) . "_" . $m;
+		  }
+		  for my $c (keys %contrasts) {
+				foreach $d (@degs) {
+					 $cmd="vbdumpstats ${SUBJECTDIR}/${s}/Models/${s}_adapts_ROT_${d}_GLM  -m ${MASKDIR}/${mm}.cub -c \"${contrasts{$c}}\"\n";
+					 $out=`$cmd`;
+# DEBUG # print $cmd;
+#### everything after here is just remunging the output from
+#vbdumpstats into nice tabdelimited format ... you may need to play
+#with it
+					 @lines=split(/\n/,$out);
+					 foreach (@lines) {
+						  if (/voxels/) {
+								$voxels =~ s/\D*(\d*)\D*/\1/;
+						  }
+						  if (/contrast/) {
+								@value = split (/stat\=/);
+								$thevalue = @value[1];
+								print "$s\t$m\t$c\t$d\t$thevalue\t$voxels\n";
+						  }
+					 }
+				}
+		  }
+	 }
+}

@@ -1,0 +1,28 @@
+#!/usr/bin/env python
+# 2007 Daniel Drucker ddrucker@psych.upenn.edu
+from string import Template
+from optparse import OptionParser
+import os
+
+parser = OptionParser()
+parser.add_option('-n', '--nstims', dest='nstims', help='number of stims', action='store', type='int', default=16)
+parser.add_option('-s', '--subjects', dest='subjectlist', help='comma separated list of subjects', action='store', type='string')
+parser.add_option('-e', '--experiment', dest='experiment', help='name of experiment', action='store', type='string')
+(options, args) = parser.parse_args()
+
+nstims = options.nstims
+subjects = options.subjectlist.split(',')
+experiment = options.experiment
+
+desttemplate = Template('/ajet/ddrucker/${experiment}_data/subjects/MDSCubes/${subject}_MDS')
+cmdtemplate = Template('tes2cub /ajet/ddrucker/${experiment}_data/subjects/${subject}/Models/${subject}_diagonal_GLM/${subject}_diagonal_GLM.prm MDS_${name}.cub ${stim}')
+
+for subject in subjects:
+    dest = desttemplate.substitute(experiment=experiment, subject=subject)
+    try:
+        os.makedirs(dest)
+    except:
+        pass
+    os.chdir(dest)
+    for stim in range(0,nstims):
+        os.system(cmdtemplate.substitute(experiment=experiment, subject=subject, name=stim+1, stim=stim))

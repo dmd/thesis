@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# for setting up a new subject - copies a set of
+# a given OLD subject files to NEW subject and replaces
+# all occurences in the files
+#
+# ddrucker 2008
+
+OLD=$1
+NEW=$2
+
+for OLDFILE in *${OLD}*; do
+	TARGET=$(echo $OLDFILE | sed -e "s/$OLD/$NEW/")
+	cp $OLDFILE $TARGET
+done
+
+perl -p -i -e "s/${OLD}/${NEW}/g" *${NEW}*
+
+	

@@ -1,0 +1,37 @@
+## path to where your G and preG should be written
+gsession /path/to/your/Models/RVF_Ring_2scans
+
+## tes files to be included
+scan /jet/aguirre/PatientStudies/MC/Controls_retinotopy_insert/J102806L/J102806L_01/J102806L_01.tes
+scan /jet/aguirre/PatientStudies/MC/Controls_retinotopy_insert/J102806L/J102806L_02/J102806L_02.tes
+scan /jet/aguirre/PatientStudies/MC/Controls_retinotopy_insert/J102806L/J102806L_03/J102806L_03.tes
+
+TR 3000
+sampling 100
+condition /jet/aguirre/PatientStudies/MC/Controls_retinotopy_insert/J102806L/Models_Standardized/Retinotopy_CondFunc_x2.ref
+newcov diagonal
+	cov-name SinCos
+	type I
+	option mean-center
+end
+modcov+ SinCos
+	option fourier-set
+	fs-period 48
+	fs-harmonics 2
+	fs-zero-freq n
+end
+newcov global-signal
+	type n
+end
+newcov scan-effect
+	type n
+end
+newcov	intercept
+	type K
+end
+
+### PUT YOUR SPIKES HERE
+#newcov spike "spikenum, spikenum, spikenum"
+#	type n
+#end
+

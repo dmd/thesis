@@ -1,0 +1,36 @@
+#!/usr/bin/env python
+# 2007 Daniel Drucker ddrucker@psych.upenn.edu
+from string import Template
+from optparse import OptionParser
+import os
+
+parser = OptionParser()
+parser.add_option('-n', '--nstims', dest='nstims', help='number of stims', action='store', type='int', default=16)
+parser.add_option('-x', '--nexm', dest='nexm', help='number of exemplars', action='store', type='int', default=5)
+parser.add_option('-s', '--subjects', dest='subjectlist', help='comma separated list of subjects', action='store', type='string')
+parser.add_option('-e', '--experiment', dest='experiment', help='name of experiment', action='store', type='string')
+parser.add_option('-b', '--subexperiment', dest='subexperiment', help='name of subexperiment', action='store', type='string', default='MDS')
+(options, args) = parser.parse_args()
+
+nstims = options.nstims
+nexm = options.nexm
+subjects = options.subjectlist.split(',')
+experiment = options.experiment
+subexperiment = options.subexperiment
+
+desttemplate = Template('/ajet/ddrucker/${experiment}_data/${subexperiment}_TrainingCubes/${subject}_TrainingCubes')
+cmdtemplate = Template('tes2cub /ajet/ddrucker/${experiment}_data/subjects/${subject}/Models/${subject}_${subexperiment}_TrainingCubes_GLM/${subject}_${subexperiment}_TrainingCubes_GLM.prm MDS_${stim}.${exm}.cub ${cub}')
+
+for subject in subjects:
+    dest = desttemplate.substitute(subexperiment=subexperiment, experiment=experiment, subject=subject)
+    try:
+        os.makedirs(dest)
+    except:
+        pass
+    os.chdir(dest)
+    cub = 0
+    for stim in range(1,nstims+1):
+        for exm in range(1,nexm+1):
+            os.system(cmdtemplate.substitute(subexperiment=subexperiment, experiment=experiment, subject=subject, stim=stim, exm=exm, cub=cub))
+            cub += 1
+

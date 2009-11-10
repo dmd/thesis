@@ -1,0 +1,16 @@
+#!/bin/bash
+
+USAGE="Usage: $0 cubfilename (without .cub extension) creates a nose-left sagittal cubfile from an axial one"
+
+if [ "$#" == "0" ]; then
+    echo "$USAGE"
+    exit 1
+fi
+
+
+CUBFILE=$1
+vb2img ${CUBFILE}.cub ${CUBFILE}_tmp
+reorient ${CUBFILE}_tmp ${CUBFILE}_tmp xz o
+reorient ${CUBFILE}_tmp ${CUBFILE}_tmp yx o
+vb2cub ${CUBFILE}_tmp.hdr ${CUBFILE}_sag.cub
+rm -rf ${CUBFILE}_tmp.hdr ${CUBFILE}_tmp.img
