@@ -1,0 +1,1 @@
+function d = distance(p1,p2,m,t)% d = distance(p1,p2,m)%% the distance between two points in Minkowsky exp m% if m is omitted, 2 (Euclidean) is assumed% if t is given, assume axes rotated by t degrees%% 2007 ddrucker@psych.upenn.eduif nargin == 2    m = 2;    t = 0;endif nargin == 3    t = 0;endrp1p2dist = diff(rotm([p1;p2],t));d = norm(rp1p2dist,m);
