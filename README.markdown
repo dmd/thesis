@@ -1,4 +1,8 @@
-This repository contains all the code I wrote in the service of my thesis.
+This repository contains all the code I wrote in the service of my thesis:
+
+ * [Distinguishing Conjoint and Independent Neural Tuning for Stimulus Features With fMRI Adaptation](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2694123/?tool=pmcentrez)
+ * [Different Spatial Scales of Shape Similarity Representation in Lateral and Ventral LOC
+](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2742590/?tool=pmcentrez)
 
 All of this is licensed under the [WTFPL](http://sam.zoy.org/wtfpl/).
 
