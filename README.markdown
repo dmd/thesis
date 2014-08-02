@@ -4,7 +4,7 @@ This repository contains all the code I wrote in the service of my thesis:
  * [Different Spatial Scales of Shape Similarity Representation in Lateral and Ventral LOC
 ](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2742590/?tool=pmcentrez)
 
-All of this is licensed under the [WTFPL](http://sam.zoy.org/wtfpl/).
+All of this is licensed under the latest version of the MIT License.
 
 Most of the more useful and general-purpose bits are available, and explained via the [lab wiki](http://cfn.upenn.edu/aguirre/wiki/public:matlab_tools).
 
