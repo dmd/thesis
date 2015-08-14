@@ -1,0 +1,55 @@
+In the attached file “fourier_ori.m” you can find the matlab program
+used to generate the stimuli that were used in several publications
+(e.g., Op de Beeck et al., 2001, Nature Neurosci., Op de Beeck et al.,
+2003, JEP:General). I suspect that the program (written using Matlab
+5.3 for windows) will work on any matlab version, as there are no
+fancy functions called (except the function 'roipoly' at the end for
+filling the outlines). The program as it is written now generates nine
+stimuli at once.
+
+The excel-table at the end of this text (note: moved to ODBparams.m)
+provides parameter values of several of the 2D shape spaces that we
+ended up using in our experiments. The first 4 rows are the parameters
+used in the current version of the program, you can take any other set
+of 4 rows (or other parameter values) to create other stimuli. It is
+not straightforward to implement these stimulus parameters with other
+algorithms used to generate Fourier Descriptor stimuli. As you can
+notice in the parameter listings, I worked with ‘non-integer
+frequencies’. As long as one uses FDs with a low amplitude (to prevent
+a contour of intersecting itself) and integer frequencies, this
+algorithm produces the same shapes as other algorithms. However, the
+two conditions mentioned (low amplitude and integer frequencies), have
+the disadvantage that generated contours look very regular and one
+seems restricted to a particular part of 'shape space'. So I included
+non-integer frequencies, which provided with quite irregular shapes
+with dimensions that still 'behave' like global Fourier dimensions
+(pilot experiments converged with the results of Cortese & Dyre,
+1996). The disadvantage of non-integer frequencies is that one gets
+non-closed contours, so the algorithm has to be adapted. And at this
+point, different algorithms diverge in their results. So, using these
+parameters will only result in the desired stimuli if combined with my
+algorithm.
+
+Please let me know if you encounter problems with
+understanding/implementing/translating the matlab script, or for more
+questions. If you would like to play with it, then I'll be happy to
+provide any other information you need. I’m afraid that this algorithm
+is written in a way that allows for almost no flexibility (e.g., too
+many variables are ‘hard coded’, and not accessible with one single
+parameter, and this will be very cumbersome if you would for example
+try to generate other stimulus sizes). At the time that I wrote the
+script I was a novice in Matlab.
+
+All feedback is welcome and I would be delighted to hear it when the
+stimuli prove useful for you.
+
+
+Best regards,
+
+--
+Hans Op de Beeck
+
+Laboratory of Experimental Psychology
+University of Leuven (K.U.Leuven)
+Mailto: hans.opdebeeck@psy.kuleuven.be
+http://www.psy.kuleuven.ac.be/~odbeeckh
